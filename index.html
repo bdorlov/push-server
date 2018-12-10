@@ -7,6 +7,20 @@
       color: blue;
       font-size: 20px;
     }
+    .device {
+      margin: 10px 0;
+      padding: 4px;
+      cursor: pointer;
+      color: #226;
+      border: 1px solid rgba(100, 100, 100, 0.5);
+      overflow: hidden;
+    }
+    .device:hover {
+      color: #faa;
+    }
+    .device__token {
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -15,10 +29,41 @@
     Для отправки пуш уведомления на нужное устройство кликните
     на его идентификаторе.
   </p>
+  <div>
+    <input id="input_header" placeholder="Заголовок" value="Заголовок">
+    <input id="input_body" placeholder="Сообщение" value="Текст сообщения">
+  </div>
   <div class="list">
     <!-- list -->
   </div>
   <script>
+    document.querySelector('.list').addEventListener('mousedown', (evt) => {
+      let elem = evt.target;
+      while (!elem.classList.contains('list')) {
+        if (elem.classList.contains('device')) {
+          const token = elem.dataset.token;
+          console.log('token = ', token);
+          const header = document.getElementById('input_header').value;
+          const body = document.getElementById('input_body').value;
+          console.log(header, body);
+          const data = {
+            token,
+            header,
+            body
+          };
+          var xhr = new XMLHttpRequest();
+          xhr.addEventListener("load", function() {
+            console.log('ОТВЕТ')
+            console.log(this.responseText);
+          });
+          xhr.open("POST", "/send");
+          xhr.send(JSON.stringify(data));
+          break;
+        } else {
+          elem = elem.parentNode;
+        }
+      }
+    });
   </script>
 </body>
 </html>
